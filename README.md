@@ -223,4 +223,17 @@ usage: cort eval [-h] ranking_file qrels_file
 
 ## How do I cite this work?
 
-coming soon
+```
+@inproceedings{wrzalik-krechel-2021-cort,
+    title = "{C}o{RT}: Complementary Rankings from Transformers",
+    author = "Wrzalik, Marco  and
+      Krechel, Dirk",
+    booktitle = "Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies",
+    month = jun,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://www.aclweb.org/anthology/2021.naacl-main.331",
+    pages = "4194--4204",
+}
+```
