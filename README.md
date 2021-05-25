@@ -1,8 +1,27 @@
 # CoRT: Complementary Rankings from Transformers
     
 This repository contains code to repoduce the results of the NAACL-HLT 2021 paper [_CoRT: Complementary Rankings from Transformers_](https://www.aclweb.org/anthology/2021.naacl-main.331) on the [_MS MARCO Passage Ranking_](https://github.com/microsoft/MSMARCO-Passage-Ranking) dataset.
-CoRT is a simple neural first-stage ranking model that leverages contextual representations from pretrained language models (here: ALBERT via ) to complement term-based ranking models. Thus, CoRT increases the recall of re-ranking candidates resulting in improved re-ranking quality with less candidates.
+CoRT is a simple neural first-stage ranking model that leverages contextual representations from pretrained language models (here: [_ALBERT_](https://github.com/google-research/albert) via [_HuggingFace Models_](https://huggingface.co/albert-base-v2)) to complement term-based ranking models. Thus, CoRT increases the recall of re-ranking candidates resulting in improved re-ranking quality with less candidates.
 The implementations in this repository are based on [_Pytorch_](https://github.com/pytorch/pytorch), [_Pytorch Lightning_](https://github.com/PyTorchLightning/pytorch-lightning) and [_HuggingFace's Transformers_](https://github.com/huggingface/transformers). We also use [_Anserini_](https://github.com/castorini/anserini) to produce BM25 rankings.
+ 
+## Table of Contents
+  * [Baseline Comparison](#baseline-comparison)
+  * [Training](#training)
+    + [Prepare the Data](#prepare-the-data)
+    + [Start a Training Run](#start-a-training-run)
+    + [View Metric Logs](#view-metric-logs)
+  * [Inference](#inference)
+    + [Trained Models](#trained-models)
+    + [Create an Index](#create-an-index)
+    + [Perform Ranking](#perform-ranking)
+    + [Merge with BM25](#merge-with-bm25)
+  * [CLI Command Reference](#cli-command-reference)
+    + [`cort train`](#cort-train)
+    + [`cort encode`](#cort-encode)
+    + [`cort rank`](#cort-rank)
+    + [`cort merge`](#cort-merge)
+    + [`cort eval`](#cort-eval)
+  * [How do I cite this work?](#how-do-i-cite-this-work)
  
 ## Baseline Comparison
 
@@ -18,9 +37,9 @@ The implementations in this repository are based on [_Pytorch_](https://github.c
 
 *CoRT was trained on complementing BM25, but still adds value to other lexical approaches.  
 
-## Getting started
+## Training
 
-To start, clone the repository, enter the created directory and install the package using pip
+To start, clone the repository, enter the created directory and install the _cort_ package using pip
 
 ```
 $ git clone https://github.com/mwrzalik/CoRT.git
@@ -128,7 +147,7 @@ $ cort merge data/my_ranking.tsv data/anserini.dev.small.tsv \
 
 For convenience, this implementation of CoRT comes with CLI commands, which are automatically installed with `$pip install -e .`. However, please enter the directory of the cloned repository before you call any of the commands (`$cd /my/path/to/CoRT`). In the following sections we summarize the available commands and their parameters.
 
-### Train a Model
+### `cort train`
 
 Starts the training of a CoRT Model
 
@@ -174,7 +193,7 @@ usage: cort train [-h] [--run_id RUN_ID] [--margin MARGIN]
  - `--test (default=True)`:  Determines if test should be performed after training (requires test_* files)"
 
  
- ### Create an Index
+ ### `cort encode`
 
 Creates an Index by encoding each item from a given collection with the given model. Increasing the
 batch_size can speed up this process. 
@@ -188,7 +207,7 @@ usage: cort encode [-h] -o OUT_DIR [-b BATCH_SIZE] [-d DEVICE]
 
 `collection` is the tsv-file containing the passages to be encoded
 
-### Perform ranking
+### `cort rank`
 
 Produces rankings for given `queries` from a tsv file according to the given `index`. The result can be evaluated directly by specifying the `--qrels_file`.
 
@@ -199,8 +218,7 @@ usage: cort rank [-h] [-o OUT_FILE] [-b BATCH_SIZE] [-d DEVICE]
                  index queries
 ```
 
-
-### Merge Rankings
+### `cort merge`
 
 Interleaves two ranking files, starting with `rankings_a`. The result can be evaluated directly by specifying the `qrels_file`.
 
@@ -210,7 +228,7 @@ usage: cort merge [-h] [-o OUT_FILE] [--maxrank MAXRANK]
                   rankings_a rankings_b
 ```
 
-### Evaluate Ranking
+### `cort eval`
 
 Calculate the evaluation metrics for a `ranking_file` and the relevance labels in `qrels_file`.
 
