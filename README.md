@@ -1,8 +1,8 @@
 # CoRT: Complementary Rankings from Transformers
     
-This repository contains code to repoduce the results of CoRT on the [MS MARCO Passage Ranking](https://github.com/microsoft/MSMARCO-Passage-Ranking) dataset.
+This repository contains code to repoduce the results of the NAACL-HLT 2021 paper [_CoRT: Complementary Rankings from Transformers_](https://www.aclweb.org/anthology/2021.naacl-main.331) on the [_MS MARCO Passage Ranking_](https://github.com/microsoft/MSMARCO-Passage-Ranking) dataset.
 CoRT is a simple neural first-stage ranking model that leverages contextual representations from pretrained language models (here: ALBERT via ) to complement term-based ranking models. Thus, CoRT increases the recall of re-ranking candidates resulting in improved re-ranking quality with less candidates.
-The implementations in this repository are based on [_Pytorch_](https://github.com/pytorch/pytorch), [_Pytorch Lightning_](https://github.com/PyTorchLightning/pytorch-lightning) and [_HuggingFace's Transformers_](https://github.com/huggingface/transformers). We also use [Anserini](https://github.com/castorini/anserini) to produce BM25 rankings.
+The implementations in this repository are based on [_Pytorch_](https://github.com/pytorch/pytorch), [_Pytorch Lightning_](https://github.com/PyTorchLightning/pytorch-lightning) and [_HuggingFace's Transformers_](https://github.com/huggingface/transformers). We also use [_Anserini_](https://github.com/castorini/anserini) to produce BM25 rankings.
  
 ## Baseline Comparison
 
@@ -26,7 +26,6 @@ To start, clone the repository, enter the created directory and install the pack
 $ git clone https://github.com/mwrzalik/CoRT.git
 $ cd CoRT && pip install -e .
 ```
-
 
 ### Prepare the Data
 
@@ -124,8 +123,6 @@ The final step is interleaving the ranking from CoRT with those from the targett
 $ cort merge data/my_ranking.tsv data/anserini.dev.small.tsv \
     --qrels_file data/qrels.dev.small.tsv -o data/my_merged_ranking.tsv
 ```
-
-    
 
 ## CLI Command Reference
 
