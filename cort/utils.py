@@ -60,13 +60,6 @@ def batched_collection_loader(file_path, batch_size):
     if len(batch[0]):
         yield batch
 
-    #
-    #     [r.readline().rstrip("\n").split("\t", maxsplit=1) for _ in range(batch_size)]
-    # id_text_gen = (line.rstrip("\n").split("\t", maxsplit=1) for line in opened_file)
-    # id_converted = ((int(qid), text) for qid, text in id_text_gen)
-    # batched = ichunked(id_converted, n=batch_size)
-    # return (list(zip(*b)) for b in batched)
-
 
 def load_qrels(qrel_file, qrel_format="trec"):
     """
