@@ -1,6 +1,6 @@
 import argparse
 from pprint import pprint
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Sequence
 
 import numpy as np
 import torch
@@ -15,7 +15,11 @@ def main():
     args = parser.parse_args()
     pprint(evaluate_impl(**vars(args)))
 
-def evaluate_impl(ranking_file, qrels_file,):
+
+def evaluate_impl(
+    ranking_file,
+    qrels_file,
+):
     rankings = load_trec_rankings(ranking_file)
     qrels = load_qrels(qrels_file)
     ranking_list, qrels_list = zip(*[(rankings[qid], qrels[qid]) for qid in qrels])
@@ -35,7 +39,11 @@ def calc_ranking_metrics(
     if type(rankings) is type(qrels) is dict:
         rankings, qrels = zip(*[(rankings[qid], qrels[qid]) for qid in qrels])
 
-    assert type(rankings) is type(qrels) is list and len(rankings) == len(qrels)
+    assert (
+        isinstance(rankings, Sequence)
+        and isinstance(qrels, Sequence)
+        and len(rankings) == len(qrels)
+    )
     results = dict()
     for ranking, query_qrels in zip(rankings, qrels):
         assert len(query_qrels) >= 1
@@ -72,7 +80,7 @@ def calc_ranking_metrics(
             else:
                 results["mrr@{}".format(cut)].append(0)
 
-        #NDCG
+        # NDCG
         for cut in ndcg_cuts:
             if "ndcg@{}".format(cut) not in results:
                 results["ndcg@{}".format(cut)] = []
@@ -106,5 +114,5 @@ def calc_ndcg(ranking: list, qrels, p=10):
     return dcg / calc_ndcg.idcgs[p][min(len(qrels), p)]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
