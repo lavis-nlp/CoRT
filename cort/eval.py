@@ -1,6 +1,6 @@
 import argparse
 from pprint import pprint
-from typing import List
+from typing import List, Union, Dict
 
 import numpy as np
 import torch
@@ -24,17 +24,20 @@ def evaluate_impl(ranking_file, qrels_file,):
 
 
 def calc_ranking_metrics(
-    rankings: List,
-    qrels_list: List,
+    rankings: Union[Dict, List],
+    qrels: Union[Dict, List],
     recall_cuts=(100, 200, 1000),
     mrr_cuts=(10, 1000),
     ndcg_cuts=(20, 1000),
     count_rankings=True,
     to_tensor=True,
 ):
-    assert len(rankings) == len(qrels_list)
+    if type(rankings) is type(qrels) is dict:
+        rankings, qrels = zip(*[(rankings[qid], qrels[qid]) for qid in qrels])
+
+    assert type(rankings) is type(qrels) is list and len(rankings) == len(qrels)
     results = dict()
-    for ranking, query_qrels in zip(rankings, qrels_list):
+    for ranking, query_qrels in zip(rankings, qrels):
         assert len(query_qrels) >= 1
         labels = np.array([1 if pid in query_qrels else 0 for pid in ranking])
         hits_rank = np.where(labels == 1)[0] + 1

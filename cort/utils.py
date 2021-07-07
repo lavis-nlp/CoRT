@@ -1,4 +1,5 @@
 import logging
+from itertools import tee
 from pathlib import Path
 import argparse
 from typing import List, Dict, Union
@@ -61,7 +62,7 @@ def batched_collection_loader(file_path, batch_size):
         yield batch
 
 
-def load_qrels(qrel_file, qrel_format="trec"):
+def load_qrels(qrel_file, qrel_format="auto"):
     """
     Loads QREL-File while assuming each line contains
     equally relevant pairs of QID and PIDS
@@ -69,9 +70,15 @@ def load_qrels(qrel_file, qrel_format="trec"):
         QID    UNUSED    PID     RELEVANCE
     format 'pairs':
         QID    PID
+    format 'auto' probes the first line to determine the format
     """
     with file_or_open(qrel_file, "r") as r:
-        p_id_idx = 1 if qrel_format == "pairs" else 2
+        if qrel_format == "auto":
+            r, copy = tee(r)
+            split = next(copy).split("\t")
+            p_id_idx = 1 if len(split)==2 else 2
+        else:
+            p_id_idx = 1 if qrel_format == "pairs" else 2
         qrel_tuple = (
             (int(splitted[0]), int(splitted[p_id_idx]))
             for splitted in (line.rstrip().split("\t") for line in r)
