@@ -51,10 +51,10 @@ def encode_impl(
 
     # determine encoder function (single/multi) and bind parameters
     if len(models)==1:
-        log.info("Performing single-gpu retrieval")
+        log.info("Using a single GPU")
         encoder_function = partial(_encode_batch_single, model=models[0], token_type=token_type)
     else:
-        log.info(f"Performing {len(models)}-gpu retrieval")
+        log.info(f"Using {len(models)} GPUs")
         encoder_function = partial(_encode_batch_multi, models=models, token_type=token_type)
 
     _perform_encoding(encoder_function, collection, tokenizer, out_dir, batch_size * len(models))
